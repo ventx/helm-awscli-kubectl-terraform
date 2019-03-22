@@ -17,7 +17,7 @@ RUN cd /usr/local/bin && \
     unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
-RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_RUNNING_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
+RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_RUNNING_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl
 
 RUN wget -q http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
