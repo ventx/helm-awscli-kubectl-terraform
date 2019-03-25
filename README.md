@@ -1,15 +1,12 @@
-# helm-awscli-kubectl-terraform
-Small Alpine-based Docker image with awscli, kubectl, helm and terraform
-
 # Description
+Small Alpine-based Docker image with installed cli tools: `awscli`, `kubectl` (latest, and older _running_ version), `helm` and `terraform`.
 
-Small Docker image with installed CLI tools: `ansible`, `aws`, `helm`, `kubectl`, `terraform`.
 
 # Versions
 
 * awscli     `1.16.131`
 * helm     `v2.13.0`
-* kubectl (latest)   `v1.13.4`
-* kubectl (running)  `v1.11.6`
+* kubectl (latest)   `v1.13.4` => _kubectl_latest_
+* kubectl (running)  `v1.11.6` => _kubectl_
 * Terraform     `0.11.11`
 
