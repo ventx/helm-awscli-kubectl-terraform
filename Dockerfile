@@ -1,16 +1,26 @@
-FROM ventx/alpine
+FROM alpine:3.9
 LABEL maintainer="hajo@ventx.de"
 
-ENV KUBE_LATEST_VERSION v1.13.4
-ENV KUBE_RUNNING_VERSION v1.11.6
-ENV HELM_VERSION v2.13.0
-ENV AWSCLI 1.16.131
-ENV TERRAFORM_VERSION 0.11.11
+ENV KUBE_LATEST_VERSION v1.14.1
+ENV KUBE_RUNNING_VERSION v1.13.4
+ENV HELM_VERSION v2.13.1
+ENV AWSCLI 1.16.169
+ENV TERRAFORM_VERSION 0.11.12
 
 
-RUN apk --update --no-cache add libc6-compat git openssh-client python py-pip
-RUN pip install --upgrade pip
-RUN pip install requests awscli==${AWSCLI}
+RUN apk --update --no-cache add \
+  bash \
+  ca-certificates \
+  curl \
+  jq \
+  git \
+  openssh-client \
+  python3 \
+  tar \
+  wget
+
+RUN pip3 install --upgrade pip
+RUN pip3 install requests awscli==${AWSCLI}
 
 # Install Terraform
 RUN cd /usr/local/bin && \
@@ -27,9 +37,23 @@ RUN wget -q http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-l
   && chmod +x /usr/local/bin/helm
 
 # Install latest kubectl
-RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl_latest \
+RUN curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl_latest \
   && chmod +x /usr/local/bin/kubectl_latest
+
+# Install envsubst
+ENV BUILD_DEPS="gettext"  \
+    RUNTIME_DEPS="libintl"
+
+RUN set -x && \
+    apk add --update $RUNTIME_DEPS && \
+    apk add --virtual build_deps $BUILD_DEPS &&  \
+    cp /usr/bin/envsubst /usr/local/bin/envsubst && \
+    apk del build_deps
+
+# Install Helm plugins
+RUN helm init --client-only
+RUN helm plugin install https://github.com/databus23/helm-diff
 
 WORKDIR /work
 
-CMD ["/bin/bash", "-l"]
+CMD ["helm", "version"]
