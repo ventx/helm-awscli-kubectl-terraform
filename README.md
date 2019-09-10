@@ -9,7 +9,7 @@ Small Alpine Docker image with awscli, kubectl, helm and terraform
 # Docker image
 
 * OS: Alpine
-* Version: 3.9
+* Version: 3.10
 
 
 # Installed Packages
@@ -26,15 +26,15 @@ Small Alpine Docker image with awscli, kubectl, helm and terraform
 
 # Installed Packages (pip)
 
-* [awscli](https://pypi.org/project/awscli/) `1.16.169`
+* [awscli](https://pypi.org/project/awscli/) `1.16.235`
 
 
 # Installed Packages (go binaries)
 
 * [helm|](https://helm.sh/) `2.13.1`
-* [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) `1.13.4`
-* [kubectl_latest](https://kubernetes.io/docs/reference/kubectl/kubectl/) `latest`
-* [terraform](https://www.terraform.io/downloads.html) `0.11.12`
+* [kubectl](https://kubernetes.io/docs/reference/kubectl/kubectl/) `1.14.1`
+* [kubectl_latest](https://kubernetes.io/docs/reference/kubectl/kubectl/) `1.15`
+* [terraform](https://www.terraform.io/downloads.html) `0.12.8`
 
 
 # Helm Plugins
