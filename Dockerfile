@@ -4,9 +4,10 @@ LABEL maintainer="hajo@ventx.de"
 ENV KUBE_LATEST_VERSION v1.15.3
 ENV KUBE_RUNNING_VERSION v1.14.1
 ENV HELM_VERSION v2.13.1
-ENV AWSCLI 1.16.235
-ENV TERRAFORM_VERSION 0.12.8
-
+ENV AWSCLI 1.16.243
+ENV TERRAFORM_VERSION 0.12.9
+ENV AWS_AUTHENTICATOR_VERSION 1.14.6
+ENV AWS_AUTHENTICATOR_DATE 2019-08-22
 
 RUN apk --update --no-cache add \
   bash \
@@ -27,6 +28,10 @@ RUN cd /usr/local/bin && \
     curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+
+# Install aws-iam-authenticator
+RUN curl https://amazon-eks.s3-us-west-2.amazonaws.com/${AWS_AUTHENTICATOR_VERSION}/${AWS_AUTHENTICATOR_DATE}/bin/linux/amd64/aws-iam-authenticator -o /usr/local/bin/aws-iam-authenticator && \
+    chmod +x /usr/local/bin/aws-iam-authenticator
 
 # Install kubectl
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_RUNNING_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
