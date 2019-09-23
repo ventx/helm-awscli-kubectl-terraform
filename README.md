@@ -26,7 +26,12 @@ Small Alpine Docker image with awscli, kubectl, helm and terraform
 
 # Installed Packages (pip)
 
-* [awscli](https://pypi.org/project/awscli/) `1.16.235`
+* [awscli](https://pypi.org/project/awscli/) `1.16.243`
+
+
+# Installed Packages (manually)
+
+* [aws-iam-authenticator](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html) `1.14.6` (2019-08-22)
 
 
 # Installed Packages (go binaries)
