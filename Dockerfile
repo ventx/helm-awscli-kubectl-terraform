@@ -45,6 +45,15 @@ RUN wget -q http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-l
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl_latest && \
     chmod +x /usr/local/bin/kubectl_latest
 
+# Install latest kubeone
+RUN cd /usr/local/bin && \
+    OS=$(uname) && \
+    VERSION=$(curl -w '%{url_effective}' -I -L -s -S https://github.com/kubermatic/kubeone/releases/latest -o /dev/null | sed -e 's|.*/v||') && \
+    curl -LO "https://github.com/kubermatic/kubeone/releases/download/v${VERSION}/kubeone_${VERSION}_${OS}_amd64.zip" && \
+    unzip kubeone_${VERSION}_${OS}_amd64.zip && \
+    chmod +x /usr/local/bin/kubeone && \
+    rm kubeone_${VERSION}_${OS}_amd64.zip
+
 # Install envsubst
 ENV BUILD_DEPS="gettext"  \
     RUNTIME_DEPS="libintl"
