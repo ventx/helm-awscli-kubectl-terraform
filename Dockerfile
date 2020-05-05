@@ -18,7 +18,9 @@ RUN apk --update --no-cache add \
   openssh-client \
   python3 \
   tar \
-  wget
+  ssh \
+  wget \
+  jq
 
 RUN pip3 install --upgrade pip
 RUN pip3 install requests awscli==${AWSCLI}
