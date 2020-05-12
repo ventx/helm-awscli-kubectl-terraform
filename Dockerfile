@@ -65,10 +65,6 @@ RUN set -x && \
     cp /usr/bin/envsubst /usr/local/bin/envsubst && \
     apk del build_deps
 
-# Install Helm plugins
-RUN helm init --client-only
-RUN helm plugin install https://github.com/databus23/helm-diff
-
 WORKDIR /work
 
 CMD ["helm", "version"]
