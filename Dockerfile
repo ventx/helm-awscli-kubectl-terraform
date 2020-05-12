@@ -18,7 +18,6 @@ RUN apk --update --no-cache add \
   openssh-client \
   python3 \
   tar \
-  ssh \
   wget \
   jq
 
