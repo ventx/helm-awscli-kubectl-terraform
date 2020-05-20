@@ -53,7 +53,8 @@ RUN cd /usr/local/bin && \
     curl -LO "https://github.com/kubermatic/kubeone/releases/download/v${VERSION}/kubeone_${VERSION}_${OS}_amd64.zip" && \
     unzip kubeone_${VERSION}_${OS}_amd64.zip && \
     chmod +x /usr/local/bin/kubeone && \
-    rm kubeone_${VERSION}_${OS}_amd64.zip
+    rm kubeone_${VERSION}_${OS}_amd64.zip \
+    kubeone version
 
 # Install envsubst
 ENV BUILD_DEPS="gettext"  \
