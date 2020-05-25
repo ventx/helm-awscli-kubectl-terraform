@@ -1,12 +1,14 @@
-FROM alpine:3.9
+FROM alpine:3.10
 LABEL maintainer="hajo@ventx.de"
 
-ENV KUBE_LATEST_VERSION v1.14.1
-ENV KUBE_RUNNING_VERSION v1.13.4
-ENV HELM_VERSION v2.13.1
-ENV AWSCLI 1.16.169
-ENV TERRAFORM_VERSION 0.11.12
-
+ENV KUBE_LATEST_VERSION v1.15.3
+ENV KUBE_RUNNING_VERSION v1.14.1
+ENV HELM_VERSION v3.2.1
+ENV AWSCLI 1.16.243
+ENV TERRAFORM_VERSION 0.12.24
+ENV AWS_AUTHENTICATOR_VERSION 1.14.6
+ENV AWS_AUTHENTICATOR_DATE 2019-08-22
+ENV KOPS_VERSION v1.18.0-alpha.3
 
 RUN apk --update --no-cache add \
   bash \
@@ -17,7 +19,8 @@ RUN apk --update --no-cache add \
   openssh-client \
   python3 \
   tar \
-  wget
+  wget \
+  jq
 
 RUN pip3 install --upgrade pip
 RUN pip3 install requests awscli==${AWSCLI}
@@ -28,17 +31,37 @@ RUN cd /usr/local/bin && \
     unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
+# Install aws-iam-authenticator
+RUN curl https://amazon-eks.s3-us-west-2.amazonaws.com/${AWS_AUTHENTICATOR_VERSION}/${AWS_AUTHENTICATOR_DATE}/bin/linux/amd64/aws-iam-authenticator -o /usr/local/bin/aws-iam-authenticator && \
+    chmod +x /usr/local/bin/aws-iam-authenticator
+
 # Install kubectl
 RUN curl -L https://storage.googleapis.com/kubernetes-release/release/${KUBE_RUNNING_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl
 
 # Install helm
-RUN wget -q http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
-  && chmod +x /usr/local/bin/helm
+RUN wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm && \
+    chmod +x /usr/local/bin/helm
 
 # Install latest kubectl
-RUN curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl_latest \
-  && chmod +x /usr/local/bin/kubectl_latest
+RUN curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl_latest && \
+    chmod +x /usr/local/bin/kubectl_latest
+
+# Install latest kubeone
+RUN cd /usr/local/bin && \
+    OS=$(uname) && \
+    VERSION=$(curl -w '%{url_effective}' -I -L -s -S https://github.com/kubermatic/kubeone/releases/latest -o /dev/null | sed -e 's|.*/v||') && \
+    curl -LO "https://github.com/kubermatic/kubeone/releases/download/v${VERSION}/kubeone_${VERSION}_${OS}_amd64.zip" && \
+    unzip kubeone_${VERSION}_${OS}_amd64.zip && \
+    chmod +x /usr/local/bin/kubeone && \
+    rm kubeone_${VERSION}_${OS}_amd64.zip 
+
+# Install Kops
+RUN cd /usr/local/bin && \
+    OS=$(uname) && \
+    curl -LO "https://github.com/kubernetes/kops/releases/download/${KOPS_VERSION}/kops-${OS}-amd64" && \
+    mv /usr/local/bin/kops-${OS}-amd64 /usr/local/bin/kops && \
+    chmod +x /usr/local/bin/kops
 
 # Install envsubst
 ENV BUILD_DEPS="gettext"  \
@@ -50,10 +73,7 @@ RUN set -x && \
     cp /usr/bin/envsubst /usr/local/bin/envsubst && \
     apk del build_deps
 
-# Install Helm plugins
-RUN helm init --client-only
-RUN helm plugin install https://github.com/databus23/helm-diff
-
 WORKDIR /work
 
 CMD ["helm", "version"]
+
