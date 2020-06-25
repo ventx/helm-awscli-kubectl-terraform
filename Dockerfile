@@ -50,10 +50,10 @@ RUN curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s 
 RUN cd /usr/local/bin && \
     OS=$(uname) && \
     VERSION=$(curl -w '%{url_effective}' -I -L -s -S https://github.com/kubermatic/kubeone/releases/latest -o /dev/null | sed -e 's|.*/v||') && \
-    curl -LO "https://github.com/kubermatic/kubeone/releases/download/v${VERSION}/kubeone_${VERSION}_${OS}_amd64.zip" && \
-    unzip kubeone_${VERSION}_${OS}_amd64.zip && \
+    curl -LO "https://github.com/kubermatic/kubeone/releases/download/v1.0.0-alpha.6/kubeone_1.0.0-alpha.6_linux_amd64.zip" && \
+    unzip kubeone_1.0.0-alpha.6_linux_amd64.zip && \
     chmod +x /usr/local/bin/kubeone && \
-    rm kubeone_${VERSION}_${OS}_amd64.zip
+    rm kubeone_1.0.0-alpha.6_linux_amd64.zip
 
 # Install envsubst
 ENV BUILD_DEPS="gettext"  \
